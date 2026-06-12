@@ -1,0 +1,93 @@
+/* ============================================================
+   全局基础样式 + reset + 复用工具类与入场动画
+   ============================================================ */
+*, *::before, *::after { box-sizing: border-box; }
+* { margin: 0; padding: 0; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  font-family: var(--font-body);
+  color: var(--ink);
+  background: var(--paper);
+  line-height: 1.6;
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  /* 纸张般的细微纹理：极淡的双层径向渐变叠加，营造氛围而非纯色 */
+  background-image:
+    radial-gradient(circle at 12% 18%, rgba(127, 160, 140, 0.10), transparent 42%),
+    radial-gradient(circle at 88% 8%, rgba(200, 100, 60, 0.06), transparent 38%);
+  background-attachment: fixed;
+  min-height: 100vh;
+}
+
+h1, h2, h3, h4 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  line-height: 1.12;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+}
+
+a { color: inherit; text-decoration: none; }
+button, input, textarea, select { font: inherit; color: inherit; }
+button { cursor: pointer; background: none; border: none; }
+img { display: block; max-width: 100%; }
+ul, ol { list-style: none; }
+
+::selection { background: var(--pine); color: var(--paper); }
+
+/* 暖调细滚动条 */
+::-webkit-scrollbar { width: 11px; height: 11px; }
+::-webkit-scrollbar-track { background: var(--paper-2); }
+::-webkit-scrollbar-thumb {
+  background: var(--line-strong);
+  border-radius: 999px;
+  border: 3px solid var(--paper-2);
+}
+::-webkit-scrollbar-thumb:hover { background: var(--sage); }
+
+/* —— 布局工具 —— */
+.container {
+  width: 100%;
+  max-width: var(--maxw);
+  margin: 0 auto;
+  padding: 0 var(--sp-5);
+}
+
+/* 眉标小标签：常用于栏目上方的 overline */
+.overline {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--clay);
+  font-family: var(--font-body);
+}
+
+/* —— 入场动画：错落上浮（高光时刻而非散乱微交互）—— */
+@keyframes rise {
+  from { opacity: 0; transform: translateY(18px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes fade {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+.rise { animation: rise var(--t-slow) var(--ease-out) both; }
+
+/* 路由切换过渡 */
+.view-enter-active { transition: opacity var(--t-mid) var(--ease), transform var(--t-mid) var(--ease); }
+.view-leave-active { transition: opacity 120ms var(--ease); }
+.view-enter-from { opacity: 0; transform: translateY(10px); }
+.view-leave-to { opacity: 0; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}
+
+@media (max-width: 640px) {
+  body { font-size: 15px; }
+  .container { padding: 0 var(--sp-4); }
+}

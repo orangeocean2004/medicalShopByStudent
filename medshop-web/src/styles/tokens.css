@@ -1,0 +1,57 @@
+/* ============================================================
+   设计 token —— 「现代药铺 / 临床编辑风」(modern apothecary)
+   刻意避开 AI 套路：暖米白底而非纯白、深松绿主色配陶土橙点缀、
+   衬线标题字体，营造可信、温润、有人情味的药房气质。
+   ============================================================ */
+:root {
+  /* —— 色彩：暖中性底 + 药材松绿 + 陶土橙点缀 —— */
+  --paper:        #f4f0e8;   /* 页面底色：暖米白（带一点纸张感）*/
+  --paper-2:      #ece6da;   /* 次级底色 */
+  --surface:      #fbf9f4;   /* 卡片表面 */
+  --ink:          #1f2a24;   /* 主文字：近黑的墨绿 */
+  --ink-soft:     #4a554e;   /* 次级文字 */
+  --ink-faint:    #8a9189;   /* 弱化文字 */
+
+  --pine:         #1f4d3a;   /* 主色：深松绿 */
+  --pine-deep:    #163829;   /* 主色加深（hover）*/
+  --pine-soft:    #e4ede7;   /* 主色淡底 */
+  --sage:         #7fa08c;   /* 辅助绿 */
+
+  --clay:         #c8643c;   /* 点缀：陶土橙（处方/强调/数据）*/
+  --clay-soft:    #f3e0d6;   /* 点缀淡底 */
+  --gold:         #b8924a;   /* 金棕（细节描边）*/
+
+  --danger:       #b23b3b;
+  --success:      #3f7d52;
+
+  --line:         #ddd5c7;   /* 描边线 */
+  --line-strong:  #c7bda9;
+
+  /* —— 字体 —— */
+  --font-display: 'Fraunces', 'Noto Serif SC', Georgia, serif;       /* 标题：有个性的衬线 */
+  --font-body:    'Hanken Grotesk', 'Noto Sans SC', system-ui, sans-serif; /* 正文 */
+  --font-mono:    'Hanken Grotesk', ui-monospace, monospace;
+
+  /* —— 间距尺度 —— */
+  --sp-1: 4px;  --sp-2: 8px;  --sp-3: 12px; --sp-4: 16px;
+  --sp-5: 24px; --sp-6: 32px; --sp-7: 48px; --sp-8: 64px; --sp-9: 96px;
+
+  /* —— 圆角：偏小、克制，不用大圆角的 AI 感 —— */
+  --r-sm: 4px;  --r-md: 8px;  --r-lg: 14px; --r-pill: 999px;
+
+  /* —— 阴影：低饱和、暖调，模拟自然光 —— */
+  --shadow-sm: 0 1px 2px rgba(31, 42, 36, 0.06);
+  --shadow-md: 0 6px 20px -8px rgba(31, 42, 36, 0.18);
+  --shadow-lg: 0 24px 60px -20px rgba(31, 42, 36, 0.28);
+
+  /* —— 动效 —— */
+  --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --t-fast: 160ms;
+  --t-mid: 280ms;
+  --t-slow: 560ms;
+
+  /* —— 布局 —— */
+  --maxw: 1180px;
+  --header-h: 76px;
+}

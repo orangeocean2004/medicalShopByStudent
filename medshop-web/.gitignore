@@ -1,0 +1,15 @@
+# Logs
+*.log
+
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+dist-ssr/
+
+# Editor
+.vscode/*
+.idea/
+*.local
+.DS_Store

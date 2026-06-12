@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.medshop.consult.mapper.ConsultationMapper">
+
+    <insert id="insertConsultation" parameterType="com.medshop.consult.entity.Consultation"
+            useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO consultation (user_id, symptom, transferred, pharmacist_id)
+        VALUES (#{userId}, #{symptom}, #{transferred}, #{pharmacistId})
+    </insert>
+
+    <select id="selectById" resultType="com.medshop.consult.entity.Consultation">
+        SELECT id, user_id, symptom, transferred, pharmacist_id, created_at
+        FROM consultation
+        WHERE id = #{id}
+    </select>
+
+    <insert id="insertMessage" parameterType="com.medshop.consult.entity.ConsultationMessage"
+            useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO consultation_message (consultation_id, sender_type, content, ai_source, confidence)
+        VALUES (#{consultationId}, #{senderType}, #{content}, #{aiSource}, #{confidence})
+    </insert>
+
+    <select id="selectMessages" resultType="com.medshop.consult.entity.ConsultationMessage">
+        SELECT id, consultation_id, sender_type, content, ai_source, confidence, created_at
+        FROM consultation_message
+        WHERE consultation_id = #{consultationId}
+        ORDER BY id
+    </select>
+
+    <update id="markTransferred">
+        UPDATE consultation
+        SET transferred = 1, pharmacist_id = #{pharmacistId}
+        WHERE id = #{id}
+    </update>
+
+    <update id="markResumed">
+        UPDATE consultation
+        SET transferred = 0, pharmacist_id = NULL
+        WHERE id = #{id}
+    </update>
+
+</mapper>

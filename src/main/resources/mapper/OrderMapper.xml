@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.medshop.shop.mapper.OrderMapper">
+
+    <insert id="insertOrder" parameterType="com.medshop.shop.entity.Order"
+            useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO orders (user_id, address_id, total_amount, status, logistics_no)
+        VALUES (#{userId}, #{addressId}, #{totalAmount}, #{status}, #{logisticsNo})
+    </insert>
+
+    <!-- 批量插入订单明细 -->
+    <insert id="insertItems">
+        INSERT INTO order_item (order_id, drug_id, quantity, unit_price)
+        VALUES
+        <foreach collection="items" item="it" separator=",">
+            (#{it.orderId}, #{it.drugId}, #{it.quantity}, #{it.unitPrice})
+        </foreach>
+    </insert>
+
+    <select id="selectById" resultType="com.medshop.shop.entity.Order">
+        SELECT id, user_id, address_id, total_amount, status, logistics_no, created_at
+        FROM orders
+        WHERE id = #{id}
+    </select>
+
+    <!-- 我的订单：按下单时间倒序 -->
+    <select id="selectByUser" resultType="com.medshop.shop.entity.Order">
+        SELECT id, user_id, address_id, total_amount, status, logistics_no, created_at
+        FROM orders
+        WHERE user_id = #{userId}
+        ORDER BY id DESC
+    </select>
+
+    <!-- 全部订单（运营后台） -->
+    <select id="selectAll" resultType="com.medshop.shop.entity.Order">
+        SELECT id, user_id, address_id, total_amount, status, logistics_no, created_at
+        FROM orders
+        ORDER BY id DESC
+    </select>
+
+    <!-- 更新订单状态/物流单号 -->
+    <update id="updateStatus">
+        UPDATE orders
+        SET status = #{status},
+            logistics_no = #{logisticsNo},
+            updated_at = CURRENT_TIMESTAMP
+        WHERE id = #{id}
+    </update>
+
+    <!-- 联表带出药品名，便于前端展示订单明细 -->
+    <select id="selectItemsByOrderId" resultType="com.medshop.shop.entity.OrderItem">
+        SELECT oi.id, oi.order_id, oi.drug_id, oi.quantity, oi.unit_price, d.name AS drug_name
+        FROM order_item oi
+        LEFT JOIN drug d ON d.id = oi.drug_id
+        WHERE oi.order_id = #{orderId}
+    </select>
+
+</mapper>

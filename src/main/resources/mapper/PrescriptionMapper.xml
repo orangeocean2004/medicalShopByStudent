@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.medshop.shop.mapper.PrescriptionMapper">
+
+    <insert id="insert" parameterType="com.medshop.shop.entity.Prescription"
+            useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO prescription (user_id, drug_id, image_url, ai_result, status)
+        VALUES (#{userId}, #{drugId}, #{imageUrl}, #{aiResult}, #{status})
+    </insert>
+
+    <select id="selectById" resultType="com.medshop.shop.entity.Prescription">
+        SELECT id, user_id AS userId, drug_id AS drugId, image_url AS imageUrl,
+               ai_result AS aiResult, status, review_comment AS reviewComment,
+               reviewer_id AS reviewerId, created_at AS createdAt, reviewed_at AS reviewedAt
+        FROM prescription
+        WHERE id = #{id}
+    </select>
+
+    <!-- 我的处方列表：不返回 image_url（base64 体积大），带药品名 -->
+    <select id="selectByUser" resultType="com.medshop.shop.dto.PrescriptionDTO">
+        SELECT p.id, p.user_id AS userId, p.drug_id AS drugId, d.name AS drugName,
+               p.status, p.review_comment AS reviewComment,
+               p.created_at AS createdAt, p.reviewed_at AS reviewedAt
+        FROM prescription p
+        LEFT JOIN drug d ON d.id = p.drug_id
+        WHERE p.user_id = #{userId}
+        ORDER BY p.id DESC
+    </select>
+
+    <!-- 待审处方（药师工作台）：含图片供审阅，带申请人手机号与药品名 -->
+    <select id="selectPending" resultType="com.medshop.shop.dto.PrescriptionDTO">
+        SELECT p.id, p.user_id AS userId, u.phone AS userPhone,
+               p.drug_id AS drugId, d.name AS drugName, p.image_url AS imageUrl,
+               p.status, p.review_comment AS reviewComment, p.created_at AS createdAt
+        FROM prescription p
+        LEFT JOIN drug d ON d.id = p.drug_id
+        LEFT JOIN user u ON u.id = p.user_id
+        WHERE p.status = 0
+        ORDER BY p.id ASC
+    </select>
+
+    <update id="updateReview">
+        UPDATE prescription
+        SET status = #{status},
+            review_comment = #{comment},
+            reviewer_id = #{reviewerId},
+            reviewed_at = CURRENT_TIMESTAMP
+        WHERE id = #{id}
+    </update>
+
+    <select id="countApprovedByUserAndDrug" resultType="int">
+        SELECT COUNT(*)
+        FROM prescription
+        WHERE user_id = #{userId}
+          AND drug_id = #{drugId}
+          AND status = 1
+    </select>
+
+    <select id="countByReviewer" resultType="int">
+        SELECT COUNT(*)
+        FROM prescription
+        WHERE reviewer_id = #{reviewerId}
+        <if test="status != null">
+          AND status = #{status}
+        </if>
+    </select>
+
+</mapper>

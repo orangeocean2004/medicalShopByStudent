@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.medshop.user.mapper.UserMapper">
+
+    <select id="findByPhone" resultType="com.medshop.user.entity.User">
+        SELECT id, phone, password_hash, nickname, role, health_profile, created_at, updated_at
+        FROM user
+        WHERE phone = #{phone}
+    </select>
+
+    <select id="findById" resultType="com.medshop.user.entity.User">
+        SELECT id, phone, password_hash, nickname, role, health_profile, created_at, updated_at
+        FROM user
+        WHERE id = #{id}
+    </select>
+
+    <!-- 回填自增主键到 user.id -->
+    <insert id="insert" parameterType="com.medshop.user.entity.User"
+            useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO user (phone, password_hash, nickname, role, health_profile)
+        VALUES (#{phone}, #{passwordHash}, #{nickname}, #{role}, #{healthProfile})
+    </insert>
+
+    <select id="findOneByRole" resultType="com.medshop.user.entity.User">
+        SELECT id, phone, password_hash, nickname, role, health_profile, created_at, updated_at
+        FROM user
+        WHERE role = #{role}
+        ORDER BY id
+        LIMIT 1
+    </select>
+
+    <!-- 刷新最近活跃时间（坐席在线心跳） -->
+    <update id="touchActive">
+        UPDATE user SET last_active_at = CURRENT_TIMESTAMP WHERE id = #{id}
+    </update>
+
+    <!-- 统计在线坐席数：last_active_at 晚于 since 视为在线 -->
+    <select id="countOnlineByRole" resultType="int">
+        SELECT COUNT(*)
+        FROM user
+        WHERE role = #{role}
+          AND last_active_at IS NOT NULL
+          AND last_active_at &gt;= #{since}
+    </select>
+
+    <!-- 取一个在线坐席，最近活跃者优先 -->
+    <select id="findOnlineByRole" resultType="com.medshop.user.entity.User">
+        SELECT id, phone, password_hash, nickname, role, health_profile, created_at, updated_at
+        FROM user
+        WHERE role = #{role}
+          AND last_active_at IS NOT NULL
+          AND last_active_at &gt;= #{since}
+        ORDER BY last_active_at DESC
+        LIMIT 1
+    </select>
+
+    <update id="updateNickname">
+        UPDATE user SET nickname = #{nickname}, updated_at = CURRENT_TIMESTAMP WHERE id = #{id}
+    </update>
+
+    <update id="updatePassword">
+        UPDATE user SET password_hash = #{passwordHash}, updated_at = CURRENT_TIMESTAMP WHERE id = #{id}
+    </update>
+
+    <select id="selectAll" resultType="com.medshop.user.entity.User">
+        SELECT id, phone, password_hash, nickname, role, health_profile, created_at, updated_at
+        FROM user
+        ORDER BY role, id
+    </select>
+
+    <select id="countByRole" resultType="int">
+        SELECT COUNT(*) FROM user WHERE role = #{role}
+    </select>
+
+</mapper>

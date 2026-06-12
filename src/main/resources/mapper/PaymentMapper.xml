@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.medshop.shop.mapper.PaymentMapper">
+
+    <insert id="insert" parameterType="com.medshop.shop.entity.Payment"
+            useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO payment (order_id, amount, channel, status, paid_at)
+        VALUES (#{orderId}, #{amount}, #{channel}, #{status}, #{paidAt})
+    </insert>
+
+</mapper>

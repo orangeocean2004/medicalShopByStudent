@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.medshop.consult.mapper.HandoffMapper">
+
+    <insert id="insert" parameterType="com.medshop.consult.entity.HandoffTicket"
+            useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO handoff_ticket (source_type, source_id, user_id, agent_id, context, reason, status)
+        VALUES (#{sourceType}, #{sourceId}, #{userId}, #{agentId}, #{context}, #{reason}, #{status})
+    </insert>
+
+    <!-- 全部工单（药师工作台），联表带出求助用户手机号 -->
+    <select id="selectAll" resultType="com.medshop.consult.dto.HandoffTicketDTO">
+        SELECT t.id, t.source_type AS sourceType, t.source_id AS sourceId,
+               t.user_id AS userId, u.phone AS userPhone,
+               t.agent_id AS agentId, t.context, t.reason, t.status, t.created_at AS createdAt
+        FROM handoff_ticket t
+        LEFT JOIN user u ON u.id = t.user_id
+        ORDER BY t.id DESC
+    </select>
+
+    <select id="selectById" resultType="com.medshop.consult.entity.HandoffTicket">
+        SELECT id, source_type, source_id, user_id, agent_id, context, reason, status, created_at
+        FROM handoff_ticket
+        WHERE id = #{id}
+    </select>
+
+    <update id="updateStatus">
+        UPDATE handoff_ticket
+        SET status = #{status},
+            agent_id = #{agentId}
+        WHERE id = #{id}
+    </update>
+
+    <select id="countByAgent" resultType="int">
+        SELECT COUNT(*)
+        FROM handoff_ticket
+        WHERE agent_id = #{agentId}
+        <if test="status != null">
+          AND status = #{status}
+        </if>
+    </select>
+
+</mapper>

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.medshop.user.mapper.PrivacyMapper">
+
+    <select id="findByUserAndScope" resultType="com.medshop.user.entity.PrivacyAuthorization">
+        SELECT id, user_id, scope, status, authorized_at, revoked_at
+        FROM privacy_authorization
+        WHERE user_id = #{userId} AND scope = #{scope}
+    </select>
+
+    <insert id="insert" parameterType="com.medshop.user.entity.PrivacyAuthorization"
+            useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO privacy_authorization (user_id, scope, status, authorized_at, revoked_at)
+        VALUES (#{userId}, #{scope}, #{status}, #{authorizedAt}, #{revokedAt})
+    </insert>
+
+    <update id="updateStatus" parameterType="com.medshop.user.entity.PrivacyAuthorization">
+        UPDATE privacy_authorization
+        SET status = #{status},
+            authorized_at = #{authorizedAt},
+            revoked_at = #{revokedAt}
+        WHERE id = #{id}
+    </update>
+
+</mapper>

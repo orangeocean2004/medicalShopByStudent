@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.medshop.consult.mapper.KnowledgeMapper">
+
+    <sql id="cols">
+        id, title, content, drug_id, source, keywords, vector_id, updated_at
+    </sql>
+
+    <select id="selectAll" resultType="com.medshop.consult.entity.KnowledgeItem">
+        SELECT <include refid="cols"/>
+        FROM knowledge_item
+    </select>
+
+    <select id="searchByKeyword" resultType="com.medshop.consult.entity.KnowledgeItem">
+        SELECT <include refid="cols"/>
+        FROM knowledge_item
+        WHERE keywords LIKE '%' || #{keyword} || '%'
+           OR title LIKE '%' || #{keyword} || '%'
+    </select>
+
+</mapper>

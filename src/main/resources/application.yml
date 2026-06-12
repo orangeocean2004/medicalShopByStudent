@@ -1,0 +1,48 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: medshop
+  # SQLite 数据源：数据库文件位于工程根目录 ./data/medshop.db
+  # 打包上传时 data/ 目录已剔除，首次启动由下方 sql.init 自动建表灌数据
+  datasource:
+    driver-class-name: org.sqlite.JDBC
+    url: jdbc:sqlite:./data/medshop.db
+    # SQLite 是单文件库，连接池保持较小
+    hikari:
+      maximum-pool-size: 5
+  # 启动时执行建表与初始化数据脚本（always：每次启动都执行，脚本内均为幂等的 IF NOT EXISTS / INSERT OR IGNORE）
+  sql:
+    init:
+      mode: always
+      encoding: UTF-8
+      schema-locations: classpath:db/schema.sql
+      data-locations: classpath:db/data.sql
+      continue-on-error: false
+
+mybatis:
+  mapper-locations: classpath:mapper/*.xml
+  type-aliases-package: com.medshop.*.entity
+  configuration:
+    map-underscore-to-camel-case: true   # 数据库下划线字段自动映射为驼峰属性
+
+# 业务自定义配置
+medshop:
+  # JWT 令牌配置
+  jwt:
+    secret: medshop-demo-secret-key-please-change-in-production-0123456789
+    expire-minutes: 720
+  # AI 中台配置（P1 AiGatewayService）
+  ai:
+    # provider 取值：
+    #   mock   —— 离线模拟，基于本地知识库做 RAG，无需联网与 API Key（解压即可演示）
+    #   claude —— 调用 Claude 中转站（OpenAI 兼容 /chat/completions 格式）
+    provider: claude
+    # 以下三项仅在 provider=claude 时生效。当前为 right.codes 的 claude-aws 渠道 + Opus 4.8。
+    # 注意：base-url 写到 /v1 为止，代码会自动拼 /chat/completions。
+    base-url: https://www.right.codes/claude-aws/v1
+    api-key: sk-0fd1d642a7b84498ba9bd04faf15eb57
+    model: claude-opus-4-8
+    # 置信度低于此阈值则建议转人工（约束 C-1）
+    confidence-threshold: 0.6

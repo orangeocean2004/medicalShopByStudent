@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.medshop.shop.mapper.DrugMapper">
+
+    <sql id="cols">
+        id, name, category, is_rx, price, stock, indication, dosage, contraindication, image_url
+    </sql>
+
+    <!-- 关键词模糊匹配：名称、分类、适应症任一命中 -->
+    <select id="selectByKeyword" resultType="com.medshop.shop.entity.Drug">
+        SELECT <include refid="cols"/>
+        FROM drug
+        WHERE name LIKE '%' || #{keyword} || '%'
+           OR category LIKE '%' || #{keyword} || '%'
+           OR indication LIKE '%' || #{keyword} || '%'
+        ORDER BY id
+        LIMIT #{size} OFFSET #{offset}
+    </select>
+
+    <select id="countByKeyword" resultType="long">
+        SELECT COUNT(*)
+        FROM drug
+        WHERE name LIKE '%' || #{keyword} || '%'
+           OR category LIKE '%' || #{keyword} || '%'
+           OR indication LIKE '%' || #{keyword} || '%'
+    </select>
+
+    <select id="selectById" resultType="com.medshop.shop.entity.Drug">
+        SELECT <include refid="cols"/>
+        FROM drug
+        WHERE id = #{id}
+    </select>
+
+    <!-- 库存足够才扣减，防超卖 -->
+    <update id="decreaseStock">
+        UPDATE drug
+        SET stock = stock - #{quantity}
+        WHERE id = #{drugId} AND stock >= #{quantity}
+    </update>
+
+    <!-- 全部药品（运营后台） -->
+    <select id="selectAll" resultType="com.medshop.shop.entity.Drug">
+        SELECT <include refid="cols"/>
+        FROM drug
+        ORDER BY id
+    </select>
+
+    <!-- 新增药品（上架） -->
+    <insert id="insert" parameterType="com.medshop.shop.entity.Drug"
+            useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO drug (name, category, is_rx, price, stock, indication, dosage, contraindication, image_url)
+        VALUES (#{name}, #{category}, #{isRx}, #{price}, #{stock}, #{indication}, #{dosage}, #{contraindication}, #{imageUrl})
+    </insert>
+
+    <!-- 编辑药品信息 -->
+    <update id="update" parameterType="com.medshop.shop.entity.Drug">
+        UPDATE drug
+        SET name = #{name},
+            category = #{category},
+            is_rx = #{isRx},
+            price = #{price},
+            stock = #{stock},
+            indication = #{indication},
+            dosage = #{dosage},
+            contraindication = #{contraindication}
+        WHERE id = #{id}
+    </update>
+
+    <!-- 直接设置库存（补货/盘点） -->
+    <update id="updateStock">
+        UPDATE drug
+        SET stock = #{stock}
+        WHERE id = #{drugId}
+    </update>
+
+</mapper>
