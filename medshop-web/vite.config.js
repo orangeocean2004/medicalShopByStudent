@@ -18,5 +18,11 @@ export default defineConfig({
         changeOrigin: true
       }
     }
+  },
+  // 单元测试（Vitest）：jsdom 环境模拟浏览器（localStorage 等），@ 别名沿用
+  test: {
+    environment: 'jsdom',
+    globals: true,
+    include: ['src/**/*.spec.js']
   }
 })
