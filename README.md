@@ -2,6 +2,8 @@
 
 计2302 20235874 于贺
 
+项目仓库：`git@github.com:orangeocean2004/medicalShopByStudent.git`
+
 一个前后端分离的线上购药系统：后端 Spring Boot + SQLite，前端 Vue 3。覆盖**消费者购药、智能药师咨询、药师审核接诊、运营管理**四类角色的完整业务闭环，解压即可在本地跑起来（SQLite 文件库，无需安装数据库服务）。
 
 ---
